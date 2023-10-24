@@ -36,11 +36,17 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
     Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
-    // Create the model matrix for rotating the triangle around the Z axis.
-    // Then return it.
+    /**
+     * | cosa -sina 0 0 |
+     * | sina cosa  0 0 |
+     * | 0    0     1 0 |
+     * | 0    0     0 1 |
+     */
 
-
+    model(0, 0) = (float)cos(rotation_angle / 180.0 * MY_PI);
+    model(0, 1) = (float)-sin(rotation_angle / 180.0 * MY_PI);
+    model(1, 0) = (float)sin(rotation_angle / 180.0 * MY_PI);
+    model(1, 1) = (float)cos(rotation_angle / 180.0 * MY_PI);
 
     return model;
 }
@@ -57,13 +63,24 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
                                       float zNear, float zFar)
 {
-    // Students will implement this function
 
     Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
-    // Create the projection matrix for the given parameters.
-    // Then return it.
+    // 透视投影矩阵
+    // | 1/(aspect_ratio*t)     0       0                       0 |
+    // | 0                      1/t     0                       0 |
+    // | 0                      0       (n+f)/(n-f)     2nf/(n-f) |
+    // | 0                      0       -1                      1 |
+
+    float t = float(tan(eye_fov / 2.0 / 180.0 * MY_PI));
+    float n = zNear;
+    float f = zFar;
+
+    projection(0, 0) = float(1.0 / (aspect_ratio * t));
+    projection(1, 1) = float(1.0 / t);
+    projection(2, 2) = (n + f) / (n - f);
+    projection(2, 3) = float(2.0 * n * f / (n - f));
+    projection(3, 2) = -1.0;
 
     return projection;
 }
@@ -120,7 +137,7 @@ int main(int argc, const char **argv)
 
         r.set_model(get_model_matrix(angle));
         r.set_view(get_view_matrix(eye_pos));
-        r.set_projection(get_projection_matrix(45, 1, 0.1, 50));
+        r.set_projection(get_projection_matrix(45, 1, 0.1f, 50));
 
         r.draw(pos_id, ind_id, rst::Primitive::Triangle);
         cv::Mat image(700, 700, CV_32FC3, r.frame_buffer().data());
@@ -137,7 +154,7 @@ int main(int argc, const char **argv)
 
         r.set_model(get_model_matrix(angle));
         r.set_view(get_view_matrix(eye_pos));
-        r.set_projection(get_projection_matrix(45, 1, 0.1, 50));
+        r.set_projection(get_projection_matrix(45, 1, 0.1f, 50));
 
         r.draw(pos_id, ind_id, rst::Primitive::Triangle);
 
@@ -145,6 +162,11 @@ int main(int argc, const char **argv)
         image.convertTo(image, CV_8UC3, 1.0f);
         cv::imshow("image", image);
         key = cv::waitKey(10);
+
+        std::stringstream stream;
+        float angle_mod = fmod(angle, 360.0f);
+        stream << std::fixed << std::setprecision(2) << angle_mod;
+        cv::setWindowTitle("image", "image\t" + stream.str());
 
         std::cout << "key: " << key << '\n';
         std::cout << "frame count: " << frame_count++ << '\n';
