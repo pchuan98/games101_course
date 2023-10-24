@@ -228,7 +228,7 @@ int main(int argc, const char **argv)
 
     else
     {
-        // axis 'zxcvbn' -> move axis
+        // axis 'xXyYzZ' -> move axis
         Vector3f axis = {0, 1, 0};
 
         rst::rasterizer r(700, 700);
@@ -279,22 +279,22 @@ int main(int argc, const char **argv)
             case 'd':
                 angle -= 5;
                 break;
-            case 'z':
+            case 'x':
                 axis.x() += 0.1f;
                 break;
-            case 'x':
+            case 'X':
                 axis.x() -= 0.1f;
                 break;
-            case 'c':
+            case 'y':
                 axis.y() += 0.1f;
                 break;
-            case 'v':
+            case 'Y':
                 axis.y() -= 0.1f;
                 break;
-            case 'b':
+            case 'z':
                 axis.z() += 0.1f;
                 break;
-            case 'n':
+            case 'Z':
                 axis.z() -= 0.1f;
                 break;
             default:
