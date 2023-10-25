@@ -11,3 +11,5 @@
 编译eigen3记得使用管理员权限，必须编译的是install项目
 
 OpenCV_DIR 含有OpenCVConfig.cmake和OpenCVConfig-version.cmake的目录
+
+Opencv中的编译库要放过去
