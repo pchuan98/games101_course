@@ -28,3 +28,4 @@ message(STATUS "[USER] IsMSVC = ${MSVC}")
 
 add_subdirectory(course01)
 add_subdirectory(course02)
+add_subdirectory(course03)
