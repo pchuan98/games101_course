@@ -103,12 +103,12 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
 
     // 透视投影矩阵
-    // | 1/(aspect_ratio*t)     0       0                       0 |
-    // | 0                      1/t     0                       0 |
-    // | 0                      0       (n+f)/(n-f)     2nf/(n-f) |
-    // | 0                      0       -1                      1 |
-
-    float t = float(tan(eye_fov / 2.0 / 180.0 * MY_PI));
+    // | 1/(aspect_ratio*t)     0               0                       0 |
+    // | 0                      tan(fov/2)      0                       0 |
+    // | 0                      0               (n+f)/(n-f)     2nf/(n-f) |
+    // | 0                      0               -1                      0 |
+    float fov = eye_fov / 180.0 * MY_PI;
+    float t = float(tan(fov / 2.0));
     float n = zNear;
     float f = zFar;
 
@@ -117,6 +117,7 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     projection(2, 2) = (n + f) / (n - f);
     projection(2, 3) = float(2.0 * n * f / (n - f));
     projection(3, 2) = -1.0;
+    projection(3, 3) = 0.0;
 
     return projection;
 }
